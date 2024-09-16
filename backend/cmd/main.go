@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/pkg/common/db"
+	"backend/pkg/tasks"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -20,14 +21,9 @@ func main() {
 	dbUrl := viper.Get("DB_URL").(string)
 
 	r := gin.Default()
-	db.Init(dbUrl)
+	d := db.Init(dbUrl)
 
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"port":  port,
-			"dbUrl": dbUrl,
-		})
-	})
+	tasks.RegisterRouters(r, d)
 
 	r.Run(port)
 }
