@@ -3,6 +3,7 @@ package main
 import (
 	"backend/pkg/common/db"
 	"backend/pkg/tasks"
+	"backend/pkg/tasksgroup"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,7 @@ func main() {
 	d := db.Init(dbUrl)
 
 	tasks.RegisterRouters(r, d)
+	tasksgroup.RegisterRoutes(r, d)
 
 	r.Run(port)
 }
