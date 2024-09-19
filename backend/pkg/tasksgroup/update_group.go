@@ -12,7 +12,7 @@ type GroupUpdateRequestBody struct {
 }
 
 func (g groupHandler) UpdateGroup(c *gin.Context) {
-	id := c.Param("id")
+	// id := c.Param("id")
 
 	var body *GroupUpdateRequestBody
 
@@ -23,14 +23,14 @@ func (g groupHandler) UpdateGroup(c *gin.Context) {
 
 	var group *models.TaskGroup
 
-	if result := g.DB.First(&group, id); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+	// if result := g.DB.First(&group, id); result.Error != nil {
+	// 	c.AbortWithError(http.StatusNotFound, result.Error)
 
-	}
+	// }
 
 	group.Name = body.Name
 
-	g.DB.Save(&group)
+	// g.DB.Save(&group)
 
 	c.JSON(http.StatusOK, &group)
 }

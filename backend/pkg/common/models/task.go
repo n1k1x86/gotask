@@ -1,18 +1,14 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+type TaskGroup struct {
+	ID    uint
+	Name  string
+	Tasks []Task
+}
 
 type Task struct {
-	gorm.Model
+	ID          uint
 	Title       string
 	Description string
 	GroupID     int
-	Group       TaskGroup `gorm:"costraint: OnUpdate:CASCADE,OnDelete:CASCADE"`
-}
-
-type TaskGroup struct {
-	gorm.Model
-	Name string
 }

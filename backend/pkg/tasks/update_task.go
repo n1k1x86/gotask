@@ -1,7 +1,7 @@
 package tasks
 
 import (
-	"backend/pkg/common/models"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,24 +15,26 @@ type UpdateTaskRequestBody struct {
 func (h handler) UpdateTask(c *gin.Context) {
 	id := c.Param("id")
 
-	var body *UpdateTaskRequestBody
+	var body UpdateTaskRequestBody
 
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
-	}
-
-	var task *models.Task
-
-	if result := h.DB.First(&task, id); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
-	task.Title = body.Title
-	task.Description = body.Description
+	result, err := h.DB.Exec(`UPDATE tasks SET title=$1, description=$2 WHERE id=$3;`, body.Title, body.Description, id)
 
-	h.DB.Save(&task)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
-	c.JSON(http.StatusOK, &task)
+	affRows, _ := result.RowsAffected()
 
+	if affRows == 0 {
+		c.AbortWithError(http.StatusNotFound, errors.New("task not found"))
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

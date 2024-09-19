@@ -19,14 +19,14 @@ func (g groupHandler) AddGroup(c *gin.Context) {
 		return
 	}
 
-	var group *models.TaskGroup
+	group := models.TaskGroup{}
 
 	group.Name = body.Name
 
-	if result := g.DB.Create(&group); result.Error != nil {
-		c.AbortWithError(http.StatusBadRequest, result.Error)
-		return
-	}
+	// if result := g.DB.Create(&group); result.Error != nil {
+	// 	c.AbortWithError(http.StatusBadRequest, result.Error)
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, &group)
 

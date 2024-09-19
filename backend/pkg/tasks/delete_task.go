@@ -1,7 +1,7 @@
 package tasks
 
 import (
-	"backend/pkg/common/models"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,14 +10,19 @@ import (
 func (h handler) DeleteTask(c *gin.Context) {
 	id := c.Param("id")
 
-	var task *models.Task
+	result, err := h.DB.Exec(`DELETE FROM tasks WHERE id = $1 RETURNING id`, id)
 
-	if result := h.DB.First(&task, id); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	h.DB.Delete(&task)
+	affectedRows, _ := result.RowsAffected()
+
+	if affectedRows == 0 {
+		c.AbortWithError(http.StatusNotFound, errors.New("task not found"))
+		return
+	}
 
 	c.Status(http.StatusOK)
 }

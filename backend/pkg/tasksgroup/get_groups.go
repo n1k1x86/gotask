@@ -10,10 +10,10 @@ import (
 func (g groupHandler) GetGroups(c *gin.Context) {
 	var groups []*models.TaskGroup
 
-	if result := g.DB.Find(&groups); result.Error != nil {
-		c.AbortWithError(http.StatusBadRequest, result.Error)
-		return
-	}
+	// if result := g.DB.Find(&groups); result.Error != nil {
+	// 	c.AbortWithError(http.StatusBadRequest, result.Error)
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, &groups)
 }

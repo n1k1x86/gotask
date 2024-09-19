@@ -1,15 +1,16 @@
 package tasks
 
 import (
+	"database/sql"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type handler struct {
-	DB *gorm.DB
+	DB *sql.DB
 }
 
-func RegisterRouters(r *gin.Engine, db *gorm.DB) {
+func RegisterRouters(r *gin.Engine, db *sql.DB) {
 	h := handler{
 		DB: db,
 	}

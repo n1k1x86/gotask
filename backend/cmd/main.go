@@ -18,11 +18,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	port := viper.Get("PORT").(string)
-	dbUrl := viper.Get("DB_URL").(string)
+	port := viper.Get("port").(string)
+	host := viper.Get("host").(string)
+	user := viper.Get("user").(string)
+	password := viper.Get("password").(string)
+	db_name := viper.Get("dbname").(string)
+	sslmode := viper.Get("sslmode").(string)
 
 	r := gin.Default()
-	d := db.Init(dbUrl)
+	d := db.Init(host, user, password, db_name, sslmode)
+
+	defer d.Close()
 
 	tasks.RegisterRouters(r, d)
 	tasksgroup.RegisterRoutes(r, d)

@@ -8,11 +8,25 @@ import (
 )
 
 func (h handler) GetTasks(c *gin.Context) {
-	var tasks []*models.Task
+	var tasks []models.Task = []models.Task{}
 
-	if result := h.DB.Find(&tasks); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+	rows, err := h.DB.Query("SELECT * FROM tasks;")
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
+	}
+
+	for rows.Next() {
+		var task models.Task
+
+		err := rows.Scan(&task.ID, &task.Title, &task.Description, &task.GroupID)
+
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+		tasks = append(tasks, task)
 	}
 
 	c.JSON(http.StatusOK, &tasks)

@@ -1,15 +1,16 @@
 package tasksgroup
 
 import (
+	"database/sql"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type groupHandler struct {
-	DB *gorm.DB
+	DB *sql.DB
 }
 
-func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
+func RegisterRoutes(r *gin.Engine, db *sql.DB) {
 	g := groupHandler{
 		DB: db,
 	}
