@@ -8,7 +8,7 @@ import (
 )
 
 func (g groupHandler) GetGroups(c *gin.Context) {
-	var groups []models.TaskGroup
+	var groups []models.TaskGroup = []models.TaskGroup{}
 
 	rows, err := g.DB.Query(`SELECT * FROM taskgroups`)
 

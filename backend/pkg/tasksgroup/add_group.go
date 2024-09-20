@@ -19,15 +19,18 @@ func (g groupHandler) AddGroup(c *gin.Context) {
 		return
 	}
 
-	var group models.TaskGroup = models.TaskGroup{
-		Name: body.Name,
-	}
+	var id uint
 
-	_, err := g.DB.Exec(`INSERT INTO taskgroups (name) VALUES ($1)`, group.Name)
+	err := g.DB.QueryRow(`INSERT INTO taskgroups (name) VALUES ($1) RETURNING id;`, body.Name).Scan(&id)
 
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
+	}
+
+	var group models.TaskGroup = models.TaskGroup{
+		ID:   id,
+		Name: body.Name,
 	}
 
 	c.JSON(http.StatusCreated, &group)
