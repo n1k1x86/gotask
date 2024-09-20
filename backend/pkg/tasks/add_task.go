@@ -44,6 +44,7 @@ func (h handler) AddTask(c *gin.Context) {
 	dueDate, err := parseTime(body)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
 	result, err := h.DB.Exec(`INSERT INTO tasks(title, description, groupid, duedate) VALUES ($1, $2, $3, $4) RETURNING id;`, body.Title, body.Description, body.GroupId, dueDate)

@@ -21,7 +21,7 @@ func (h handler) GetTask(c *gin.Context) {
 	}
 
 	if dueDate.Valid {
-		task.DueDate = dueDate.Time
+		task.DueDate = dueDate.Time.Format("2006-01-02")
 	}
 
 	c.JSON(http.StatusOK, &task)
