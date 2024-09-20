@@ -17,7 +17,7 @@ func (g groupHandler) GetGroup(c *gin.Context) {
 	err := res.Scan(&group.ID, &group.Name)
 
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusNotFound, err)
 		return
 	}
 
