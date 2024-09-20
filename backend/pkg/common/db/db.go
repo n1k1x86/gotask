@@ -23,7 +23,7 @@ func Init(host string, user string, password string, dbname string, sslmode stri
 		log.Fatal(err)
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS tasks(id SERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, description TEXT NOT NULL, groupId INTEGER REFERENCES taskgroups (id), FOREIGN KEY (groupId) REFERENCES taskgroups (id))")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS tasks(id SERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, description TEXT NOT NULL, groupId INTEGER REFERENCES taskgroups (id), FOREIGN KEY (groupId) REFERENCES taskgroups (id) ON DELETE CASCADE)")
 
 	if err != nil {
 		log.Fatal(err)

@@ -1,22 +1,32 @@
 package tasksgroup
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (g groupHandler) DeleteGroup(c *gin.Context) {
-	// id := c.Param("id")
+	id := c.Param("id")
 
-	// var group *models.TaskGroup
+	res, err := g.DB.Exec(`DELETE FROM taskgroups WHERE id = $1`, id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
-	// if result := g.DB.First(&group, id); result.Error != nil {
-	// 	c.AbortWithError(http.StatusNotFound, result.Error)
-	// 	return
-	// }
+	aR, err := res.RowsAffected()
 
-	// g.DB.Delete(&group)
+	if aR == 0 {
+		c.AbortWithError(http.StatusNotFound, errors.New("group not found"))
+		return
+	}
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
 	c.Status(http.StatusOK)
 }

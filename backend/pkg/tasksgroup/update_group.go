@@ -1,7 +1,7 @@
 package tasksgroup
 
 import (
-	"backend/pkg/common/models"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,25 +12,33 @@ type GroupUpdateRequestBody struct {
 }
 
 func (g groupHandler) UpdateGroup(c *gin.Context) {
-	// id := c.Param("id")
+	id := c.Param("id")
 
-	var body *GroupUpdateRequestBody
+	var body GroupAddRequestBody
 
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	var group *models.TaskGroup
+	res, err := g.DB.Exec(`UPDATE taskgroups SET name = $1 WHERE id = $2`, body.Name, id)
 
-	// if result := g.DB.First(&group, id); result.Error != nil {
-	// 	c.AbortWithError(http.StatusNotFound, result.Error)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
-	// }
+	aR, err := res.RowsAffected()
 
-	group.Name = body.Name
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
-	// g.DB.Save(&group)
+	if aR == 0 {
+		c.AbortWithError(http.StatusNotFound, errors.New("group not found"))
+		return
+	}
 
-	c.JSON(http.StatusOK, &group)
+	c.Status(http.StatusOK)
 }

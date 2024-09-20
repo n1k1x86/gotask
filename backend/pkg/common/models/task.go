@@ -1,9 +1,8 @@
 package models
 
 type TaskGroup struct {
-	ID    uint
-	Name  string
-	Tasks []Task
+	ID   uint
+	Name string
 }
 
 type Task struct {
