@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"backend/pkg/common/models"
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,13 +20,18 @@ func (h handler) GetTasks(c *gin.Context) {
 
 	for rows.Next() {
 		var task models.Task
-
-		err := rows.Scan(&task.ID, &task.Title, &task.Description, &task.GroupID)
+		var dueDate sql.NullTime
+		err := rows.Scan(&task.ID, &task.Title, &task.Description, &task.GroupID, &dueDate)
 
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
+
+		if dueDate.Valid {
+			task.DueDate = dueDate.Time
+		}
+
 		tasks = append(tasks, task)
 	}
 
